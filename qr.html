@@ -10,8 +10,8 @@
     .qr-card { background: #1e293b; border-radius: 16px; padding: 2.5rem; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,.4); max-width: 420px; width: 100%; }
     .qr-card h1 { font-size: 1.4rem; margin-bottom: .5rem; color: #f8fafc; }
     .qr-card p { font-size: .85rem; color: #94a3b8; margin-bottom: 1.5rem; }
-    #qrcode { display: inline-block; padding: 1rem; background: #fff; border-radius: 12px; margin-bottom: 1.5rem; }
-    #qrcode img { display: block; }
+    .qr-box { display: inline-block; padding: 1rem; background: #fff; border-radius: 12px; margin-bottom: 1.5rem; }
+    .qr-box img { display: block; width: 220px; height: 220px; }
     .url-box { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: .75rem 1rem; font-family: 'Fira Code', monospace; font-size: .8rem; color: #38bdf8; word-break: break-all; margin-bottom: 1.5rem; }
     .instructions { text-align: left; background: #0f172a; border-radius: 8px; padding: 1rem; font-size: .78rem; color: #94a3b8; line-height: 1.6; }
     .instructions code { background: #334155; padding: .15rem .4rem; border-radius: 4px; color: #fbbf24; font-size: .75rem; }
@@ -23,40 +23,19 @@
   <div class="qr-card">
     <h1>Dashboard BI - QR</h1>
     <p>Escanea para abrir el dashboard en tu celular</p>
-    <div id="qrcode"></div>
-    <div class="url-box" id="url-text">Cargando...</div>
+    <div class="qr-box">
+      <img src="qr-code.png" alt="QR Code - Dashboard BI">
+    </div>
+    <div class="url-box">https://silvarodemi-maker.github.io/dashboard-bi-poblacion/</div>
     <div class="instructions">
       <p><strong>Para usar este QR:</strong></p>
       <ol>
-        <li>Escanea el c\u00f3digo QR con la c\u00e1mara de tu celular</li>
-        <li>Se abrir\u00e1 el dashboard autom\u00e1ticamente</li>
-        <li>Tambi\u00e9n puedes acceder desde cualquier navegador</li>
+        <li>Escanea el código QR con la cámara de tu celular</li>
+        <li>Se abrirá el dashboard automáticamente</li>
+        <li>También puedes acceder desde cualquier navegador</li>
       </ol>
-      <p style="margin-top:.5rem;">No requiere servidor local ni conexi\u00f3n a la misma red WiFi</p>
+      <p style="margin-top:.5rem;">No requiere servidor local ni conexión a la misma red WiFi</p>
     </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script>
-    function getLocalIP() {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      ctx.textBaseline = 'top';
-      ctx.font = '14px monospace';
-      ctx.fillText('test', 2, 2);
-      return 'localhost';
-    }
-
-    const url = 'https://silvarodemi-maker.github.io/dashboard-bi-poblacion/';
-    document.getElementById('url-text').textContent = url;
-
-    new QRCode(document.getElementById('qrcode'), {
-      text: url,
-      width: 220,
-      height: 220,
-      colorDark: '#0f172a',
-      colorLight: '#ffffff',
-      correctLevel: QRCode.CorrectLevel.M
-    });
-  </script>
 </body>
 </html>
