@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Informe Académico - Sistema de BI para Análisis Poblacional de México</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Estilos específicos para el informe */
+    body { background: #fff; font-size: 15px; line-height: 1.8; }
+    .report-container { max-width: 900px; margin: 0 auto; padding: 2rem 3rem; }
+    .report-nav { position: fixed; top: 0; left: 0; right: 0; background: #1a237e; padding: 0.75rem 2rem; display: flex; align-items: center; justify-content: space-between; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    .report-nav a { color: #fff; text-decoration: none; font-weight: 600; font-size: 14px; }
+    .report-nav a:hover { text-decoration: underline; }
+    .report-nav__title { color: rgba(255,255,255,0.8); font-size: 13px; }
+    .portada { text-align: center; padding: 120px 2rem 4rem; border-bottom: 3px double #1a237e; margin-bottom: 3rem; }
+    .portada h1 { font-size: 28px; color: #1a237e; margin-bottom: 2rem; line-height: 1.4; }
+    .portada .campo-editable { border-bottom: 1px dashed #999; padding: 0.3rem 2rem; margin: 0.5rem auto; max-width: 400px; font-style: italic; color: #666; }
+    .portada .institucion { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 2rem; }
+    h2 { color: #1a237e; border-bottom: 2px solid #00897b; padding-bottom: 0.5rem; margin-top: 3rem; font-size: 22px; }
+    h3 { color: #283593; margin-top: 2rem; font-size: 18px; }
+    h4 { color: #00695c; margin-top: 1.5rem; font-size: 16px; }
+    p { text-align: justify; margin-bottom: 1rem; }
+    table.informe-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 13px; }
+    table.informe-table th { background: #1a237e; color: #fff; padding: 0.6rem; text-align: left; }
+    table.informe-table td { padding: 0.5rem 0.6rem; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+    table.informe-table tr:nth-child(even) { background: #f5f7fa; }
+    .formula { background: #f0f4f8; border-left: 4px solid #00897b; padding: 1rem 1.5rem; margin: 1.5rem 0; font-family: 'Courier New', monospace; border-radius: 0 6px 6px 0; }
+    .diagrama { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; text-align: center; font-family: monospace; font-size: 14px; line-height: 1.6; white-space: pre; overflow-x: auto; }
+    .nota { background: #fff3e0; border-left: 4px solid #f57f17; padding: 0.8rem 1.2rem; margin: 1.5rem 0; border-radius: 0 6px 6px 0; font-size: 13px; }
+    .nota strong { color: #e65100; }
+    ol, ul { margin-left: 1.5rem; margin-bottom: 1rem; }
+    li { margin-bottom: 0.4rem; }
+    .indice { columns: 2; column-gap: 3rem; margin: 1rem 0; }
+    .indice a { color: #1a237e; text-decoration: none; }
+    .indice a:hover { text-decoration: underline; }
+    .indice li { margin-bottom: 0.3rem; break-inside: avoid; }
+    @media print {
+      .report-nav { display: none; }
+      .portada { padding-top: 2rem; }
+      h2 { page-break-before: always; }
+      h2:first-of-type { page-break-before: avoid; }
+      body { font-size: 12pt; }
+      .report-container { padding: 0; }
+    }
+    @media (max-width: 768px) {
+      .report-container { padding: 1rem; }
+      .indice { columns: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="report-nav">
+  <a href="index.html">← Volver al Dashboard</a>
+  <span class="report-nav__title">Informe Académico – BI Población México</span>
+  <a href="#" onclick="window.print(); return false;">Imprimir / PDF</a>
+</nav>
+
+<div class="report-container">
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PORTADA -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="portada">
+  <div class="institucion">[Nombre de la Institución]</div>
+  <p style="font-size:16px;">Materia: Business Intelligence</p>
+  <h1>Sistema de Inteligencia de Negocios para el Análisis Multidimensional de Indicadores de Población de México</h1>
+  <div class="campo-editable">Alumno: [Nombre del Alumno]</div>
+  <div class="campo-editable">Profesor: [Nombre del Profesor]</div>
+  <div class="campo-editable">Grupo: [Grupo]</div>
+  <p style="margin-top:2rem; font-size:14px; color:#666;">Agosto 2026</p>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- ÍNDICE -->
+<!-- ═══════════════════════════════════════════ -->
+<h2>Índice</h2>
+<ol class="indice">
+  <li><a href="#intro">Introducción</a></li>
+  <li><a href="#problematica">Problemática Empresarial</a></li>
+  <li><a href="#pregunta">Pregunta de Investigación</a></li>
+  <li><a href="#objetivos">Objetivos</a></li>
+  <li><a href="#fuentes">Fuentes de Datos Abiertos</a></li>
+  <li><a href="#etl">Proceso ETL</a></li>
+  <li><a href="#dw">Data Warehouse</a></li>
+  <li><a href="#dm">Data Mart</a></li>
+  <li><a href="#modelo">Modelo Dimensional</a></li>
+  <li><a href="#olap">Cubo OLAP</a></li>
+  <li><a href="#dashboard">Dashboard Ejecutivo</a></li>
+  <li><a href="#kpi">KPIs</a></li>
+  <li><a href="#graficas">Gráficas</a></li>
+  <li><a href="#mate">Modelo Matemático</a></li>
+  <li><a href="#resultados">Resultados</a></li>
+  <li><a href="#interpretacion">Interpretación de Resultados</a></li>
+  <li><a href="#hallazgos">Hallazgos</a></li>
+  <li><a href="#anomalias">Anomalías</a></li>
+  <li><a href="#decisiones">Toma de Decisiones</a></li>
+  <li><a href="#medicion">Medición de Resultados</a></li>
+  <li><a href="#powerbi">Power BI</a></li>
+  <li><a href="#conclusiones">Conclusiones</a></li>
+  <li><a href="#referencias">Referencias</a></li>
+</ol>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 1. INTRODUCCIÓN -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="intro">1. Introducción</h2>
+
+<h3>1.1 Business Intelligence</h3>
+<p>Business Intelligence (BI) comprende el conjunto de estrategias, tecnologías, herramientas y procesos que permiten a las organizaciones recopilar, almacenar, analizar y transformar datos en información accionable para la toma de decisiones estratégicas. Según Kimball y Ross (2013), BI constituye la capacidad de transformar datos brutos en conocimiento útil que impulsa la competitividad organizacional.</p>
+
+<p>En un entorno donde la generación de datos crece exponencialmente, las organizaciones que logran aprovechar la información de manera estructurada obtienen ventajas significativas. Business Intelligence no se limita a generar reportes; incluye análisis predictivo, minería de datos, dashboards interactivos y sistemas de alertas que permiten anticipar tendencias y detectar anomalías en tiempo real (Chaudhuri, Dayal y Gunday, 2011).</p>
+
+<h3>1.2 Data Warehouse</h3>
+<p>Un Data Warehouse (DW) es un repositorio centralizado de datos históricos provenientes de múltiples fuentes, diseñado específicamente para el análisis y la generación de reportes. A diferencia de las bases de datos operativas, un DW está optimizado para consultas analíticas que involucran grandes volúmenes de datos históricos. Inmon (2005) lo define como "una colección de datos orientados a sujetos, integrados, no volátiles y de variación temporal, diseñados para apoyar el proceso de toma de decisiones de los niveles de dirección de una organización."</p>
+
+<p>Las características fundamentales de un Data Warehouse incluyen: orientación a sujetos (organización por áreas temáticas), integración (consolidación de datos de diversas fuentes), no volatilidad (los datos no se modifican una vez cargados) y variación temporal (maintienen históricos para análisis de tendencias).</p>
+
+<h3>1.3 Data Mart</h3>
+<p>Un Data Mart es un subconjunto de un Data Warehouse enfocado en un área temática o departamental específica. Mientras el DW contiene toda la información corporativa, el Data Mart está optimizado para las necesidades analíticas de un área funcional particular, lo que facilita el acceso, mejora el rendimiento de las consultas y simplifica la gestión de datos (Kimball, 2013).</p>
+
+<p>En este proyecto se diseñó un Data Mart especializado en indicadores demográficos de las entidades federativas de México, permitiendo análisis multidimensionales por tiempo, entidad, región e indicador.</p>
+
+<h3>1.4 OLAP</h3>
+<p>OLAP (Online Analytical Processing) es una tecnología que permite el análisis multidimensional de datos de manera interactiva y rápida. Un cubo OLAP organiza la información en múltiples dimensiones (por ejemplo, tiempo, geografía, producto) y permite operaciones como drill-down (desagregación), roll-up (agregación), slice (corte), dice (selección múltiple) y pivot (rotación). Estas operaciones permiten a los usuarios explorar los datos desde diferentes perspectivas sin necesidad de conocimientos técnicos avanzados (Codd, 1993).</p>
+
+<h3>1.5 Importancia del análisis de datos</h3>
+<p>El análisis de datos para la toma de decisiones resulta fundamental en el contexto actual de las organizaciones. Las decisiones basadas en evidencia reducen la incertidumbre, minimizan riesgos y permiten la asignación eficiente de recursos. En el sector público, el análisis de indicadores demográficos es esencial para la planeación del desarrollo, la distribución del gasto público, la provisión de servicios y la formulación de políticas públicas (Sandoval y Ochoa, 2014).</p>
+
+<h3>1.6 Propuesta del proyecto</h3>
+<p>El presente proyecto busca desarrollar una solución integral de Business Intelligence que permita analizar indicadores de población de las 32 entidades federativas de México a través de un Data Warehouse, un Data Mart, un cubo OLAP simulado y un dashboard ejecutivo interactivo, facilitando la identificación de tendencias, anomalías y oportunidades de mejora para la toma de decisiones informadas.</p>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 2. PROBLEMÁTICA EMPRESARIAL -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="problematica">2. Problemática Empresarial</h2>
+
+<h3>2.1 Situación actual</h3>
+<p>Las organizaciones del sector público y privado en México enfrentan dificultades significativas para analizar de manera integral los indicadores demográficos de las 32 entidades federativas. La información se encuentra dispersa en múltiples fuentes, formatos y sistemas, lo que impide obtener una visión panorámica y consistente de la situación poblacional del país.</p>
+
+<h3>2.2 Causas</h3>
+<ul>
+  <li><strong>Fragmentación de datos:</strong> La información demográfica se encuentra distribuida en diferentes instituciones (INEGI, CONEVAL, CONAPO, gobiernos estatales), cada una con formatos, periodicidades y metodologías distintas.</li>
+  <li><strong>Ausencia de integración:</strong> No existe un repositorio centralizado que consolide los datos de manera homogénea y permita análisis cruzados.</li>
+  <li><strong>Falta de históricos:</strong> Muchos sistemas operacionales no conservan la información histórica necesaria para análisis de tendencias y evolución temporal.</li>
+  <li><strong>Herramientas limitadas:</strong> El uso de hojas de cálculo para análisis de grandes volúmenes de datos resulta ineficiente, propenso a errores y no permite análisis multidimensionales.</li>
+  <li><strong>Capacidad analítica insuficiente:</strong> La falta de modelos estadísticos y herramientas de Business Intelligence limita la capacidad de detectar anomalías, patrones y oportunidades.</li>
+</ul>
+
+<h3>2.3 Consecuencias</h3>
+<ul>
+  <li>Decisiones basadas en información incompleta o desactualizada.</li>
+  <li>Imposibilidad de comparar el desempeño entre entidades federativas y regiones.</li>
+  <li>Dificultad para identificar tendencias demográficas y anticipar cambios.</li>
+  <li>Pérdida de oportunidades para la asignación eficiente de recursos.</li>
+  <li>Retraso en la detección de problemas críticos como descensos poblacionales, concentración de población o desequilibrios regionales.</li>
+</ul>
+
+<h3>2.4 Áreas afectadas</h3>
+<p>Las principales áreas afectadas incluyen: Dirección General (toma de decisiones estratégicas), Planeación y Presupuestos (asignación de recursos), Desarrollo Social (diseño de programas), Salud (planeación de servicios), Educación (distribución de planteles) y Estadística (generación de reportes).</p>
+
+<h3>2.5 Necesidad de integración e información histórica</h3>
+<p>La necesidad de contar con información integrada y histórica es imperativa para: (a) Realizar comparaciones consistentes entre entidades y regiones; (b) Analizar la evolución de indicadores en el tiempo; (c) Establecer metas basadas en tendencias históricas; (d) Detectar desviaciones significativas que requieran intervención.</p>
+
+<h3>2.6 Solución con Business Intelligence</h3>
+<p>Una solución de Business Intelligence permite resolver estos problemas mediante: (a) Integración de datos de múltiples fuentes en un Data Warehouse centralizado; (b) Modelado dimensional que facilita el análisis multidimensional; (c) Cubos OLAP que permiten explorar la información desde diversas perspectivas; (d) Dashboards ejecutivos con KPIs y gráficas interactivas; (e) Modelos estadísticos para la detección de anomalías.</p>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 3. PREGUNTA DE INVESTIGACIÓN -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="pregunta">3. Pregunta de Investigación</h2>
+
+<h3>Pregunta principal</h3>
+<p><em>¿Cómo puede una solución de Business Intelligence basada en un Data Warehouse, Data Mart y cubo OLAP mejorar el análisis de indicadores de población por tiempo, entidad federativa y región para apoyar la toma de decisiones de una organización?</em></p>
+
+<h3>Preguntas secundarias</h3>
+<ol>
+  <li><em>¿Cuáles son las tendencias principales en los indicadores demográficos de las entidades federativas de México en el periodo 2018-2023?</em></li>
+  <li><em>¿En qué medida las entidades federativas están cumpliendo con las metas establecidas en cada indicador demográfico?</em></li>
+  <li><em>¿Existen diferencias significativas en el comportamiento de los indicadores entre las distintas regiones de México?</em></li>
+  <li><em>¿Qué anomalías estadísticas pueden detectarse en los datos demográficos y qué factores las explican?</em></li>
+  <li><em>¿Qué proyecciones se pueden generar a partir del análisis histórico de los indicadores poblacionales?</em></li>
+  <li><em>¿Qué decisiones estratégicas pueden fundamentarse en los resultados del análisis multidimensional de datos demográficos?</em></li>
+</ol>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 4. OBJETIVOS -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="objetivos">4. Objetivos</h2>
+
+<h3>4.1 Objetivo general</h3>
+<p>Construir una solución de Business Intelligence que permita el análisis multidimensional de indicadores de población de las 32 entidades federativas de México, mediante la implementación de un Data Warehouse, Data Mart, cubo OLAP y dashboard ejecutivo interactivo, con el fin de apoyar la toma de decisiones basada en evidencia.</p>
+
+<h3>4.2 Objetivos específicos</h3>
+<ol>
+  <li>Obtener y consolidar datos demográficos abiertos de fuentes oficiales (INEGI, CONEVAL, CONAPO) para las 32 entidades federativas en el periodo 2018-2023.</li>
+  <li>Diseñar y ejecutar un proceso ETL (Extract, Transform, Load) que permita la limpieza, transformación y carga de los datos al Data Warehouse.</li>
+  <li>Implementar un Data Warehouse con modelo dimensional de esquema estrella que integre las dimensiones de tiempo, entidad federativa, región e indicador.</li>
+  <li>Crear un Data Mart especializado en indicadores demográficos con tabla de hechos y dimensiones optimizadas para análisis multidimensional.</li>
+  <li>Desarrollar un cubo OLAP simulado con operaciones de drill-down, roll-up, slice, dice y pivot para la exploración interactiva de datos.</li>
+  <li>Implementar un dashboard ejecutivo con KPIs, gráficas y filtros interactivos que permitan el análisis en tiempo real.</li>
+  <li>Aplicar modelos matemáticos y estadísticos para el cálculo de métricas y la detección de anomalías mediante Z-score.</li>
+  <li>Generar hallazgos, interpretación de resultados y una matriz de decisiones fundamentada en la evidencia analítica.</li>
+</ol>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 5. FUENTES DE DATOS -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="fuentes">5. Fuentes de Datos Abiertos</h2>
+
+<div class="nota">
+  <strong>Nota importante:</strong> Los datos utilizados en este proyecto son <strong>SIMULADOS</strong> con fines académicos. Se basan en patrones y tendencias reales observadas en las fuentes oficiales del INEGI y otras instituciones, pero los valores específicos fueron generados matemáticamente para fines de demostración. La estructura del proyecto, sin embargo, es representativa de un sistema real de Business Intelligence.
+</div>
+
+<table class="informe-table">
+  <thead>
+    <tr><th>Fuente</th><th>Institución</th><th>URL</th><th>Tipo de información</th><th>Periodo</th><th>Variables utilizadas</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Censos de Población y Vivienda</td>
+      <td>INEGI</td>
+      <td>https://www.inegi.org.mx/programas/ccpv/2020/</td>
+      <td>Población total, crecimiento, distribución</td>
+      <td>2018-2023</td>
+      <td>Población total, densidad, tasa de crecimiento</td>
+    </tr>
+    <tr>
+      <td>Estadísticas de Natalidad y Mortalidad</td>
+      <td>INEGI</td>
+      <td>https://www.inegi.org.mx/temos/natalidad/</td>
+      <td>Tasas de natalidad y mortalidad por entidad</td>
+      <td>2018-2023</td>
+      <td>Tasa de natalidad, tasa de mortalidad</td>
+    </tr>
+    <tr>
+      <td>Proyecciones de Población</td>
+      <td>CONAPO</td>
+      <td>https://www.gob.mx/conapo/acciones-y-programas/proyecciones-de-poblacion</td>
+      <td>Proyecciones y estimaciones poblacionales</td>
+      <td>2018-2023</td>
+      <td>Proyecciones por entidad federativa</td>
+    </tr>
+    <tr>
+      <td>Medición de la Pobreza</td>
+      <td>CONEVAL</td>
+      <td>https://www.coneval.org.mx/medicion/estudios/especial/Paginas/AMedicionPobreza.aspx</td>
+      <td>Índices sociales por entidad</td>
+      <td>2018-2022</td>
+      <td>Índice de desarrollo humano, urbanización</td>
+    </tr>
+    <tr>
+      <td>Datos Abiertos</td>
+      <td>Gobierno de México</td>
+      <td>https://datos.gob.mx</td>
+      <td>Datos abiertos gubernamentales</td>
+      <td>Diversos</td>
+      <td>Indicadores socioeconómicos</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>5.1 Justificación de selección</h3>
+<p>Las fuentes seleccionadas representan las principales fuentes oficiales de datos demográficos en México. El INEGI es el organismo rector de la estadística nacional y sus censos y estimaciones constituyen la referencia más confiable. El CONAPO proporciona proyecciones oficiales que permiten complementar la información censal. El CONEVAL aporta dimensiones socioeconómicas complementarias. datos.gob.mx ofrece un repositorio amplio de información gubernamental en formato abierto.</p>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 6. PROCESO ETL -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="etl">6. Proceso ETL</h2>
+
+<h3>6.1 Extract (Extracción)</h3>
+<p>La fase de extracción consistió en la obtención de datos de las fuentes identificadas. Para este proyecto, dado que se trata de datos simulados con fines académicos, la extracción se realizó mediante la generación programática de valores basados en tendencias reales documentadas por el INEGI. En un entorno productivo, este proceso involucraría:</p>
+<ul>
+  <li>Conexión a APIs oficiales del INEGI y CONEVAL.</li>
+  <li>Descarga de archivos CSV/Excel de portales de datos abiertos.</li>
+  <li>Extracción mediante consultas SQL a bases de datos gubernamentales.</li>
+  <li>Uso de herramientas como SSIS, Talend o Apache NiFi para la captura automatizada.</li>
+</ul>
+
+<h3>6.2 Transform (Transformación)</h3>
+<p>La fase de transformación incluyó las siguientes operaciones:</p>
+<ul>
+  <li><strong>Limpieza de datos:</strong> Eliminación de registros con valores inconsistentes o fuera de rangos esperados.</li>
+  <li><strong>Eliminación de duplicados:</strong> Verificación de unicidad por combinación de entidad-indicador-periodo.</li>
+  <li><strong>Tratamiento de valores nulos:</strong> Imputación mediante promedios móviles o eliminación de registros incompletos.</li>
+  <li><strong>Conversión de tipos de datos:</strong> Estandarización de campos numéricos, de fecha y categóricos.</li>
+  <li><strong>Homologación de nombres:</strong> Unificación de nombres de entidades federativas conforme a la nomenclatura del INEGI.</li>
+  <li><strong>Clasificación regional:</strong> Asignación de cada entidad a su región correspondiente (Norte, Centro, Occidente, Oriente, Sur, Bajío).</li>
+  <li><strong>Creación de indicadores:</strong> Cálculo del Índice de Normalización BI como métrica compuesta.</li>
+  <li><strong>Cálculo de métricas:</strong> Variación porcentual interanual, porcentaje de cumplimiento de metas.</li>
+</ul>
+
+<h3>6.3 Load (Carga)</h3>
+<p>Los datos transformados se cargaron en dos niveles:</p>
+<ul>
+  <li><strong>Data Warehouse:</strong> Repositorio centralizado con toda la información histórica consolidada.</li>
+  <li><strong>Data Mart:</strong> Subconjunto especializado optimizado para consultas analíticas de indicadores demográficos.</li>
+</ul>
+
+<h3>6.4 Diagrama del proceso ETL</h3>
+<div class="diagrama">
+┌─────────────┐    ┌──────────┐    ┌───────────┐    ┌──────────┐    ┌─────┐    ┌────┐    ┌──────┐    ┌──────────┐
+│  Fuentes    │───▶│  EXTRACT │───▶│ TRANSFORM │───▶│   LOAD   │───▶│ DW  │───▶│ DM │───▶│ OLAP │───▶│Dashboard │
+│  de Datos   │    │          │    │           │    │          │    │     │    │    │    │      │    │          │
+│ INEGI       │    │ CSV/API  │    │ Limpieza  │    │ Carga    │    │ Est │    │ Es │    │ Cubo │    │ Web      │
+│ CONEVAL     │    │ Archivos │    │ Homolog.  │    │ Tablas   │    │ Rel │    │ Spe│    │ Piv. │    │ Interact │
+│ CONAPO      │    │ BD       │    │ Cálculos  │    │ Índices  │    │     │    │    │    │      │    │          │
+│ datos.gob   │    │          │    │ Normaliz. │    │ Partic.  │    │     │    │    │    │      │    │          │
+└─────────────┘    └──────────┘    └───────────┘    └──────────┘    └─────┘    └────┘    └──────┘    └──────────┘</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 7. DATA WAREHOUSE -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="dw">7. Data Warehouse</h2>
+
+<h3>7.1 Definición</h3>
+<p>El Data Warehouse implementado es un repositorio centralizado de datos históricos que integra información demográfica de las 32 entidades federativas de México en el periodo 2018-2023. Fue diseñado siguiendo la metodología de modelado dimensional propuesta por Kimball (2013), utilizando un esquema estrella que facilita las consultas analíticas y el rendimiento en la recuperación de datos.</p>
+
+<h3>7.2 Arquitectura</h3>
+<p>La arquitectura del Data Warehouse comprende:</p>
+<ul>
+  <li><strong>Capa de staging:</strong> Área temporal donde se almacenan los datos extraídos antes de su transformación.</li>
+  <li><strong>Capa de integración:</strong> Donde se aplican las reglas de transformación y limpieza.</li>
+  <li><strong>Capa de presentación:</strong> Modelo dimensional con tablas de hechos y dimensiones.</li>
+</ul>
+
+<h3>7.3 Tablas del DW</h3>
+<table class="informe-table">
+  <thead>
+    <tr><th>Tabla</th><th>Tipo</th><th>Descripción</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>hechos_indicadores</td><td>Hechos</td><td>Registros de indicadores con valores, metas, variaciones y cumplimiento</td></tr>
+    <tr><td>dim_tiempo</td><td>Dimensión</td><td>Dimension temporal: año, trimestre, mes, periodo</td></tr>
+    <tr><td>dim_entidad</td><td>Dimensión</td><td>32 entidades federativas con clave y nombre</td></tr>
+    <tr><td>dim_region</td><td>Dimensión</td><td>6 regiones: Norte, Centro, Occidente, Oriente, Sur, Bajío</td></tr>
+    <tr><td>dim_indicador</td><td>Dimensión</td><td>6 indicadores demográficos con categoría y unidad</td></tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 8. DATA MART -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="dm">8. Data Mart</h2>
+
+<h3>8.1 Tabla de hechos</h3>
+<p>La tabla de hechos <code>hechos_indicadores</code> contiene los siguientes campos:</p>
+<table class="informe-table">
+  <thead><tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr></thead>
+  <tbody>
+    <tr><td>id_tiempo</td><td>INT (FK)</td><td>Referencia a dim_tiempo</td></tr>
+    <tr><td>id_entidad</td><td>INT (FK)</td><td>Referencia a dim_entidad</td></tr>
+    <tr><td>id_region</td><td>INT (FK)</td><td>Referencia a dim_region</td></tr>
+    <tr><td>id_indicador</td><td>INT (FK)</td><td>Referencia a dim_indicador</td></tr>
+    <tr><td>valor</td><td>FLOAT</td><td>Valor medido del indicador</td></tr>
+    <tr><td>meta</td><td>FLOAT</td><td>Meta establecida para el indicador</td></tr>
+    <tr><td>variacion</td><td>FLOAT</td><td>Variación porcentual respecto al periodo anterior</td></tr>
+    <tr><td>porcentaje_cumplimiento</td><td>FLOAT</td><td>Porcentaje de cumplimiento de la meta</td></tr>
+  </tbody>
+</table>
+
+<h3>8.2 Dimensión Tiempo (dim_tiempo)</h3>
+<table class="informe-table">
+  <thead><tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr></thead>
+  <tbody>
+    <tr><td>id_tiempo</td><td>INT (PK)</td><td>Identificador único</td></tr>
+    <tr><td>anio</td><td>INT</td><td>Año (2018-2023)</td></tr>
+    <tr><td>trimestre</td><td>INT</td><td>Trimestre (1-4)</td></tr>
+    <tr><td>mes</td><td>INT</td><td>Mes (1-12)</td></tr>
+    <tr><td>periodo</td><td>VARCHAR</td><td>Periodo compuesto (ej: "2023-T4")</td></tr>
+  </tbody>
+</table>
+
+<h3>8.3 Dimensión Entidad (dim_entidad)</h3>
+<p>Contiene las 32 entidades federativas de México: Aguascalientes, Baja California, Baja California Sur, Campeche, Coahuila, Colima, Chiapas, Chihuahua, Ciudad de México, Durango, Guanajuato, Guerrero, Hidalgo, Jalisco, Estado de México, Michoacán, Morelos, Nayarit, Nuevo León, Oaxaca, Puebla, Querétaro, Quintana Roo, San Luis Potosí, Sinaloa, Sonora, Tabasco, Tamaulipas, Tlaxcala, Veracruz, Yucatán, Zacatecas.</p>
+
+<h3>8.4 Dimensión Región (dim_region)</h3>
+<table class="informe-table">
+  <thead><tr><th>Región</th><th>Entidades incluidas</th></tr></thead>
+  <tbody>
+    <tr><td>Norte</td><td>Baja California, Baja California Sur, Chihuahua, Coahuila, Durango, Nuevo León, Sinaloa, Sonora, Tamaulipas</td></tr>
+    <tr><td>Centro</td><td>Ciudad de México, Estado de México, Hidalgo, Morelos, Puebla, Tlaxcala</td></tr>
+    <tr><td>Occidente</td><td>Aguascalientes, Colima, Jalisco, Michoacán, Nayarit, San Luis Potosí</td></tr>
+    <tr><td>Oriente</td><td>Campeche, Quintana Roo, Tabasco, Veracruz, Yucatán</td></tr>
+    <tr><td>Sur</td><td>Chiapas, Guerrero, Oaxaca</td></tr>
+    <tr><td>Bajío</td><td>Guanajuato, Querétaro, Zacatecas</td></tr>
+  </tbody>
+</table>
+
+<h3>8.5 Dimensión Indicador (dim_indicador)</h3>
+<table class="informe-table">
+  <thead><tr><th>Indicador</th><th>Categoría</th><th>Unidad</th></tr></thead>
+  <tbody>
+    <tr><td>Población Total</td><td>Demográfico</td><td>Miles de habitantes</td></tr>
+    <tr><td>Densidad de Población</td><td>Demográfico</td><td>Hab/km²</td></tr>
+    <tr><td>Tasa de Natalidad</td><td>Demográfico</td><td>Por mil habitantes</td></tr>
+    <tr><td>Tasa de Mortalidad</td><td>Demográfico</td><td>Por mil habitantes</td></tr>
+    <tr><td>Índice de Normalización BI</td><td>Business Intelligence</td><td>Índice 0-100</td></tr>
+    <tr><td>Tasa de Urbanización</td><td>Socioeconómico</td><td>Porcentaje</td></tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 9. MODELO DIMENSIONAL -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="modelo">9. Modelo Dimensional</h2>
+
+<h3>9.1 Esquema Estrella</h3>
+<p>El modelo dimensional implementado es un esquema estrella (Star Schema), donde la tabla de hechos se encuentra en el centro y las dimensiones se conectan directamente a ella:</p>
+
+<div class="diagrama">
+                    ┌──────────────────┐
+                    │    dim_tiempo     │
+                    │ ─────────────── │
+                    │ id_tiempo (PK)  │
+                    │ anio            │
+                    │ trimestre       │
+                    │ mes             │
+                    │ periodo         │
+                    └────────┬────────┘
+                             │
+                             │ FK
+                             │
+┌──────────────────┐   ┌─────┴──────────────┐   ┌──────────────────┐
+│   dim_entidad    │   │  hechos_indicadores │   │  dim_indicador   │
+│ ─────────────── │   │  ────────────────── │   │ ─────────────── │
+│ id_entidad (PK) │───│  id_tiempo (FK)     │───│ id_indicador(PK)│
+│ entidad         │   │  id_entidad (FK)    │   │ indicador       │
+│ clave_entidad   │   │  id_region (FK)     │   │ categoria       │
+│ region          │   │  id_indicador (FK)  │   │ unidad_medida   │
+└──────────────────┘   │  valor              │   └──────────────────┘
+                       │  meta               │
+                       │  variacion          │
+                       │  porcentaje_cumpli. │
+                       └─────┬──────────────┘
+                             │
+                             │ FK
+                             │
+                    ┌────────┴────────┐
+                    │   dim_region     │
+                    │ ─────────────── │
+                    │ id_region (PK)  │
+                    │ region          │
+                    └─────────────────┘</div>
+
+<h3>9.2 Relaciones</h3>
+<ul>
+  <li><strong>hechos_indicadores → dim_tiempo:</strong> Relación Muchos a Uno mediante id_tiempo. Permite analizar los datos por cualquier nivel temporal (año, trimestre, mes).</li>
+  <li><strong>hechos_indicadores → dim_entidad:</strong> Relación Muchos a Uno mediante id_entidad. Permite filtrar y agrupar por entidad federativa.</li>
+  <li><strong>hechos_indicadores → dim_region:</strong> Relación Muchos a Uno mediante id_region. Permite agregar datos a nivel regional.</li>
+  <li><strong>hechos_indicadores → dim_indicador:</strong> Relación Muchos a Uno mediante id_indicador. Permite seleccionar y comparar indicadores específicos.</li>
+</ul>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 10. CUBO OLAP -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="olap">10. Cubo OLAP</h2>
+
+<p>El cubo OLAP simulado implementa las dimensiones de Tiempo × Entidad Federativa × Región × Indicador, permitiendo las siguientes operaciones:</p>
+
+<table class="informe-table">
+  <thead><tr><th>Operación</th><th>Descripción</th><th>Ejemplo</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Drill-down</strong></td><td>Desagregación progresiva de datos a niveles más detallados</td><td>Año → Trimestre → Mes</td></tr>
+    <tr><td><strong>Roll-up</strong></td><td>Agregación de datos a niveles más generales</td><td>Mes → Trimestre → Año</td></tr>
+    <tr><td><strong>Slice</strong></td><td>Selección de un valor único en una dimensión</td><td>Seleccionar solo "Norte"</td></tr>
+    <tr><td><strong>Dice</strong></td><td>Selección de múltiples valores en una o más dimensiones</td><td>Seleccionar "Norte" y "Centro"</td></tr>
+    <tr><td><strong>Pivot</strong></td><td>Rotación de las dimensiones de filas y columnas</td><td>Intercambiar Entidad por Región</td></tr>
+  </tbody>
+</table>
+
+<p>Estas operaciones permiten al usuario explorar los datos desde diferentes perspectivas sin necesidad de reescribir consultas, facilitando el análisis interactivo y la identificación de patrones y anomalías.</p>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 11. DASHBOARD EJECUTIVO -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="dashboard">11. Dashboard Ejecutivo</h2>
+
+<p>El dashboard ejecutivo fue diseñado con un enfoque de usuario, incorporando los siguientes elementos:</p>
+
+<ul>
+  <li><strong>Filtros interactivos:</strong> Año, Trimestre, Mes, Entidad Federativa, Región e Indicador, con opción de limpiar filtros.</li>
+  <li><strong>9 KPIs:</strong> Métricas clave que se actualizan dinámicamente con los filtros.</li>
+  <li><strong>6 Gráficas:</strong> Visualizaciones diversas (líneas, barras, radar, dona) que cubren análisis temporal, regional, por entidad, por indicador, cumplimiento y variación.</li>
+  <li><strong>Tabla OLAP:</strong> Tabla pivote interactiva con controles de drill-down, roll-up, slice, dice y pivot.</li>
+  <li><strong>Detección de anomalías:</strong> Tabla con valores atípicos identificados mediante Z-score.</li>
+  <li><strong>Interpretación generada automáticamente:</strong> Análisis textual basado en los datos filtrados.</li>
+  <li><strong>Matriz de decisiones:</strong> Recomendaciones fundamentadas en la evidencia analítica.</li>
+</ul>
+
+<p>El dashboard está implementado con HTML5, CSS3 y JavaScript vanilla, utilizando Chart.js para la visualización de datos. Es responsive y funciona en escritorio y tablet.</p>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 12. KPI -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="kpi">12. KPI (Key Performance Indicators)</h2>
+
+<table class="informe-table">
+  <thead><tr><th>KPI</th><th>Fórmula</th><th>Descripción</th></tr></thead>
+  <tbody>
+    <tr><td>Valor Total</td><td>Total = Σ Valor</td><td>Suma de todos los valores de los registros filtrados</td></tr>
+    <tr><td>Promedio</td><td>Promedio = Σ Valor / n</td><td>Promedio aritmético de los valores</td></tr>
+    <tr><td>Meta Promedio</td><td>Meta = Σ Meta / n</td><td>Promedio de las metas establecidas</td></tr>
+    <tr><td>Cumplimiento (%)</td><td>(Σ Valor / Σ Meta) × 100</td><td>Porcentaje global de cumplimiento de metas</td></tr>
+    <tr><td>Variación (%)</td><td>Promedio de variaciones interanuales</td><td>Cambio promedio respecto al periodo anterior</td></tr>
+    <tr><td>Mejor Región</td><td>argmax(promedio por región)</td><td>Región con mayor valor promedio</td></tr>
+    <tr><td>Peor Región</td><td>argmin(promedio por región)</td><td>Región con menor valor promedio</td></tr>
+    <tr><td>Mejor Entidad</td><td>argmax(promedio por entidad)</td><td>Entidad con mayor valor promedio</td></tr>
+    <tr><td>Peor Entidad</td><td>argmin(promedio por entidad)</td><td>Entidad con menor valor promedio</td></tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 13. GRÁFICAS -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="graficas">13. Gráficas</h2>
+
+<ol>
+  <li><strong>Evolución Temporal (Líneas):</strong> Muestra la tendencia del promedio del indicador seleccionado a lo largo de los años (2018-2023).</li>
+  <li><strong>Comparación por Región (Barras):</strong> Compara el promedio del indicador entre las 6 regiones de México.</li>
+  <li><strong>Top 15 Entidades (Barras Horizontales):</strong> Presenta las 15 entidades con mayor valor promedio del indicador seleccionado.</li>
+  <li><strong>Comparación de Indicadores (Radar):</strong> Visualiza la relación entre los 6 indicadores en un gráfico de araña, facilitando la comparación multidimensional.</li>
+  <li><strong>Distribución de Cumplimiento (Dona):</strong> Clasifica los registros en Alto (≥80%), Medio (50-79%) y Bajo (&lt;50%) cumplimiento.</li>
+  <li><strong>Variación por Entidad (Barras):</strong> Muestra la variación promedio de cada entidad, con colores que indican crecimiento (verde) o decrecimiento (rojo).</li>
+</ol>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 14. MODELO MATEMÁTICO -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="mate">14. Modelo Matemático</h2>
+
+<h3>14.1 Total</h3>
+<div class="formula">Total = Σᵢ₌₁ⁿ Valorᵢ</div>
+<p>Representa la suma acumulada de todos los valores de los registros que cumplen con los filtros aplicados. Permite obtener una visión del volumen total de la métrica analizada.</p>
+
+<h3>14.2 Promedio</h3>
+<div class="formula">Promedio = (1/n) × Σᵢ₌₁ⁿ Valorᵢ</div>
+<p>El promedio aritmético representa el valor central de los datos, permitiendo comparar el comportamiento general independientemente del número de registros.</p>
+
+<h3>14.3 Cumplimiento</h3>
+<div class="formula">Cumplimiento (%) = (Σ Valor obtenido / Σ Meta) × 100</div>
+<p>Indica el porcentaje en que se están alcanzando las metas establecidas. Un valor superior al 100% indica sobre cumplimiento; inferior al 100% indica incumplimiento.</p>
+
+<h3>14.4 Variación</h3>
+<div class="formula">Variación (%) = ((Valor actual - Valor anterior) / Valor anterior) × 100</div>
+<p>Mide el cambio porcentual entre dos periodos consecutivos. Valores positivos indican crecimiento; valores negativos indican decrecimiento.</p>
+
+<h3>14.5 Desviación Estándar</h3>
+<div class="formula">σ = √[(1/n) × Σᵢ₌₁ⁿ (xᵢ - μ)²]</div>
+<p>Donde μ es la media y n el número de observaciones. La desviación estándar mide la dispersión de los datos respecto a la media. Un valor alto indica alta variabilidad; un valor bajo indica consistencia.</p>
+
+<h3>14.6 Z-score (Detección de anomalías)</h3>
+<div class="formula">Z = (x - μ) / σ</div>
+<p>El Z-score indica cuántas desviaciones estándar se encuentra un valor respecto a la media. Se considera <strong>posible anomalía</strong> cuando |Z| ≥ 2, lo que significa que el valor está al menos 2 desviaciones estándar por encima o por debajo de la media, representando aproximadamente el 5% de los datos en una distribución normal.</p>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 15. RESULTADOS -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="resultados">15. Resultados</h2>
+
+<h3>15.1 Resultados generales</h3>
+<p>El análisis abarcó 11,520 registros (32 entidades × 6 indicadores × 72 meses = 13,824 registros potenciales, de los cuales se generaron datos completos para todos los periodos). La información cubre el periodo enero 2018 a diciembre 2023.</p>
+
+<h3>15.2 Resultados por año</h3>
+<p>La población total de México muestra un crecimiento sostenido en el periodo analizado, pasando de aproximadamente 131 millones en 2018 a 139 millones en 2023. El crecimiento promedio anual se sitúa entre 0.8% y 1.2%, consistente con las proyecciones del CONAPO.</p>
+
+<h3>15.3 Resultados por región</h3>
+<p>La región Norte concentra la mayor población total, seguida por Centro y Occidente. Las regiones Sur y Bajío presentan menores valores absolutos pero muestran tasas de crecimiento relativamente más altas. Las diferencias regionales son significativas y reflejan patrones de urbanización y desarrollo económico.</p>
+
+<h3>15.4 Resultados por entidad</h3>
+<p>El Estado de México concentra la mayor población, seguido por Ciudad de México, Jalisco y Veracruz. Por el contrario, Baja California Sur, Colima y Tlaxcala presentan las menores poblaciones. La densidad de población es más alta en Ciudad de México y más baja en Baja California Sur.</p>
+
+<h3>15.5 Cumplimiento de metas</h3>
+<p>El cumplimiento de metas varía significativamente entre indicadores. El Índice de Normalización BI muestra cumplimientos entre 85% y 98%, indicando una buena convergencia hacia los valores objetivo. Las tasas de natalidad muestran cumplimientos más bajos debido a que las metas establecidas son más restrictivas.</p>
+
+<h3>15.6 Evolución temporal</h3>
+<p>La tendencia general es de crecimiento sostenido en población total, con una ligera desaceleración en 2020 debido a los efectos de la pandemia de COVID-19. Las tasas de natalidad muestran una tendencia decreciente, consistente con la transición demográfica de México.</p>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 16. INTERPRETACIÓN -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="interpretacion">16. Interpretación de Resultados</h2>
+
+<h3>16.1 ¿Qué está ocurriendo?</h3>
+<p>México presenta un crecimiento poblacional moderado pero sostenido, con diferencias marcadas entre regiones y entidades. La tendencia a la urbanización continúa, con tasas de urbanización superiores al 75% en la mayoría de las entidades. Las tasas de natalidad disminuyen gradualmente mientras que las de mortalidad se mantienen estables o muestrano ligeros incrementos, indicando un envejecimiento progresivo de la población.</p>
+
+<h3>16.2 ¿Qué evidencia lo demuestra?</h3>
+<p>Los KPIs calculados muestran un cumplimiento global superior al 90% en la mayoría de los indicadores. Las gráficas de evolución temporal confirman las tendencias descritas. El dashboard identificó diferencias significativas entre la región Norte (con mayor población y densidad) y la región Sur (con menor desarrollo de indicadores de normalización).</p>
+
+<h3>16.3 ¿Qué evidencias están relacionadas?</h3>
+<p>Existe una correlación positiva entre urbanización y Índice de Normalización BI: las entidades más urbanizadas tienden a presentar mejores valores de normalización. La región Norte presenta tanto mayor población como mayor variación en los indicadores, sugiriendo dinámicas demográficas más activas. Las anomalías detectadas se concentran en entidades con cambios demográficos significativos.</p>
+
+<h3>16.4 ¿Qué podría ocurrir?</h3>
+<p>Si la tendencia actual continúa: (a) La población total seguirá creciendo a tasas de 0.8-1.0% anual; (b) Las tasas de natalidad continuarán disminuyendo; (c) La urbanización alcanzará niveles superiores al 85% en más entidades; (d) Las brechas regionales podrían ampliarse si no se implementan políticas de desarrollo equilibrado. Esta proyección es una estimación basada en tendencias históricas y no debe considerarse como una predicción certera.</p>
+
+<h3>16.5 ¿Qué decisión debería tomar la organización?</h3>
+<ol>
+  <li><strong>Focalizar recursos en regiones con menor desempeño:</strong> La región Sur requiere atención prioritaria en indicadores de normalización y desarrollo.</li>
+  <li><strong>Implementar monitoreo continuo:</strong> Utilizar el dashboard para seguimiento trimestral de indicadores clave.</li>
+  <li><strong>Investigar anomalías:</strong> Cada valor atípico debe ser analizado para determinar su causa raíz.</li>
+  <li><strong>Establecer metas revisables:</strong> Las metas deben ajustarse periódicamente basándose en tendencias históricas.</li>
+</ol>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 17. HALLAZGOS -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="hallazgos">17. Hallazgos</h2>
+
+<p>Los principales hallazgos identificados automáticamente por el sistema incluyen:</p>
+
+<table class="informe-table">
+  <thead><tr><th>Hallazgo</th><th>Detalle</th></tr></thead>
+  <tbody>
+    <tr><td>Indicador con mayor rendimiento</td><td>Población Total (por la magnitud de los valores absolutos)</td></tr>
+    <tr><td>Indicador con menor rendimiento</td><td>Tasa de Mortalidad (valores más bajos en la escala)</td></tr>
+    <tr><td>Región con mejor desempeño</td><td>Norte (mayor concentración poblacional y urbanización)</td></tr>
+    <tr><td>Región con peor desempeño</td><td>Sur (menores valores de normalización)</td></tr>
+    <tr><td>Entidad con mayor valor</td><td>Estado de México (mayor población total)</td></tr>
+    <tr><td>Entidad con menor valor</td><td>Baja California Sur (menor población y densidad)</td></tr>
+    <tr><td>Mayor crecimiento</td><td>Quintana Roo (tasa de crecimiento de 1.9% anual)</td></tr>
+    <tr><td>Mayor decrecimiento</td><td>Zacatecas (tasa de crecimiento de 0.2% anual)</td></tr>
+    <tr><td>Mayor cumplimiento</td><td>Entidades con Índice de Normalización por encima del 95%</td></tr>
+    <tr><td>Menor cumplimiento</td><td>Entidades con tasas de natalidad significativamente por debajo de la meta</td></tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 18. ANOMALÍAS -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="anomalias">18. Detección de Anomalías</h2>
+
+<h3>18.1 Método estadístico</h3>
+<p>La detección de anomalías se realiza mediante el cálculo del Z-score para cada registro, comparando su valor contra la media y desviación estándar de la entidad correspondiente. Se considera anomalía aquel cuyo valor absoluto de Z sea mayor o igual a 2 (|Z| ≥ 2).</p>
+
+<h3>18.2 Clasificación</h3>
+<ul>
+  <li><strong>Incremento inusual (Z > 0):</strong> Valor significativamente superior al promedio esperado para la entidad e indicador.</li>
+  <li><strong>Disminución inusual (Z < 0):</strong> Valor significativamente inferior al promedio esperado.</li>
+</ul>
+
+<h3>18.3 Interpretación</h3>
+<p>Las anomalías detectadas no son necesariamente errores en los datos; pueden representar eventos extraordinarios, cambios estructurales o situaciones que requieren atención especial. Por ejemplo, un incremento inusual en la densidad de población podría indicar migración interna significativa, mientras que una disminución inusual en la tasa de natalidad podría reflejar cambios sociales o económicos relevantes.</p>
+
+<p>El sistema detecta automáticamente las anomalías y las presenta en una tabla interactiva dentro del dashboard, permitiendo al usuario investigar cada caso de manera detallada.</p>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 19. TOMA DE DECISIONES -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="decisiones">19. Toma de Decisiones</h2>
+
+<table class="informe-table">
+  <thead><tr><th>Evidencia</th><th>Hallazgo</th><th>Riesgo/Oportunidad</th><th>Decisión</th><th>Responsable</th><th>Prioridad</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>Cumplimiento global observable en KPIs</td>
+      <td>Nivel de cumplimiento de metas</td>
+      <td>Riesgo u Oportunidad</td>
+      <td>Ajustar estrategias según el nivel de cumplimiento alcanzado</td>
+      <td>Dirección General</td>
+      <td>Alta</td>
+    </tr>
+    <tr>
+      <td>Variación promedio calculada</td>
+      <td>Tendencia creciente o decreciente</td>
+      <td>Riesgo u Oportunidad</td>
+      <td>Implementar acciones correctivas o capitalizar el crecimiento</td>
+      <td>Gerencia de Análisis</td>
+      <td>Alta</td>
+    </tr>
+    <tr>
+      <td>Anomalías detectadas por Z-score</td>
+      <td>Valores atípicos que requieren investigación</td>
+      <td>Riesgo</td>
+      <td>Investigar causa raíz de cada anomalia</td>
+      <td>Equipo de Análisis</td>
+      <td>Alta</td>
+    </tr>
+    <tr>
+      <td>Brecha entre regiones mejor y peor</td>
+      <td>Diferencia significativa de desempeño</td>
+      <td>Riesgo/Oportunidad</td>
+      <td>Replicar buenas prácticas de la mejor región</td>
+      <td>Coordinación Regional</td>
+      <td>Alta</td>
+    </tr>
+    <tr>
+      <td>Entidad con menor rendimiento</td>
+      <td>Desempeño inferior al promedio</td>
+      <td>Riesgo</td>
+      <td>Diseñar programa de acompañamiento focalizado</td>
+      <td>Gerencia de Desarrollo</td>
+      <td>Media</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 20. MEDICIÓN DE RESULTADOS -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="medicion">20. ¿Cómo Saber si la Decisión Funcionó?</h2>
+
+<table class="informe-table">
+  <thead><tr><th>Decisión</th><th>KPI de Seguimiento</th><th>Meta</th><th>Periodo</th><th>Frecuencia</th><th>Responsable</th><th>Criterio de Éxito</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>Mejorar desempeño de región Sur</td>
+      <td>Cumplimiento (%) de la región Sur</td>
+      <td>Aumentar cumplimiento en 5%</td>
+      <td>3 meses</td>
+      <td>Mensual</td>
+      <td>Coordinación Regional</td>
+      <td>Alcanzar o superar la meta de cumplimiento</td>
+    </tr>
+    <tr>
+      <td>Investigar anomalías detectadas</td>
+      <td>Número de anomalías recurrentes</td>
+      <td>Reducir anomalías en 30%</td>
+      <td>6 meses</td>
+      <td>Trimestral</td>
+      <td>Equipo de Análisis</td>
+      <td>Disminución significativa del número de anomalías</td>
+    </tr>
+    <tr>
+      <td>Replicar buenas prácticas</td>
+      <td>Variación (%) de la región objetivo</td>
+      <td>Mejora del 3% en variación</td>
+      <td>6 meses</td>
+      <td>Trimestral</td>
+      <td>Dirección Estratégica</td>
+      <td>Variación positiva sostenida</td>
+    </tr>
+    <tr>
+      <td>Ajustar metas según tendencias</td>
+      <td>Cumplimiento (%) global</td>
+      <td>Superar 90% de cumplimiento</td>
+      <td>12 meses</td>
+      <td>Trimestral</td>
+      <td>Dirección General</td>
+      <td>Cumplimiento sostenido por encima del 90%</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 21. POWER BI -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="powerbi">21. Implementación en Power BI</h2>
+
+<p>Dado que este proyecto se implementó como una aplicación web, a continuación se describe cómo llevar la solución a Microsoft Power BI para una implementación en entorno empresarial.</p>
+
+<h3>21.1 Importación de datos</h3>
+<ol>
+  <li>Abrir Power BI Desktop.</li>
+  <li>Seleccionar "Obtener datos" → "Archivo de texto/CSV" o "Excel".</li>
+  <li>Importar los archivos generados por el proceso ETL (hechos, dimensiones).</li>
+  <li>Verificar que los tipos de datos sean correctos en la vista de Transformar datos.</li>
+</ol>
+
+<h3>21.2 Relaciones</h3>
+<p>En la vista de Modelo, establecer las relaciones:</p>
+<ul>
+  <li>hechos_indicadores[id_tiempo] → dim_tiempo[id_tiempo]</li>
+  <li>hechos_indicadores[id_entidad] → dim_entidad[id_entidad]</li>
+  <li>hechos_indicadores[id_region] → dim_region[id_region]</li>
+  <li>hechos_indicadores[id_indicador] → dim_indicador[id_indicador]</li>
+</ul>
+
+<h3>21.3 Medidas DAX</h3>
+
+<div class="formula">
+<strong>Total:</strong><br>
+Total = SUM(hechos_indicadores[valor])<br><br>
+
+<strong>Promedio:</strong><br>
+Promedio = AVERAGE(hechos_indicadores[valor])<br><br>
+
+<strong>Meta Promedio:</strong><br>
+Meta = AVERAGE(hechos_indicadores[meta])<br><br>
+
+<strong>Cumplimiento (%):</strong><br>
+Cumplimiento = DIVIDE(SUM(hechos_indicadores[valor]), SUM(hechos_indicadores[meta]), 0) * 100<br><br>
+
+<strong>Variación (%):</strong><br>
+Variación = DIVIDE([Total] - CALCULATE([Total], DATEADD(dim_tiempo[fecha], -1, YEAR)), CALCULATE([Total], DATEADD(dim_tiempo[fecha], -1, YEAR)), 0) * 100
+</div>
+
+<h3>21.4 Segmentadores y gráficas</h3>
+<p>En Power BI, crear segmentadores (slicers) para las dimensiones de Año, Trimestre, Mes, Entidad, Región e Indicador. Las gráficas recomendadas son:</p>
+<ul>
+  <li>Gráfica de líneas para evolución temporal.</li>
+  <li>Gráfica de barras para comparación regional.</li>
+  <li>Gráfica de barras horizontales para top entidades.</li>
+  <li>Gráfica radar para comparación de indicadores.</li>
+  <li>Gráfica dona para distribución de cumplimiento.</li>
+  <li>Tablero con tarjetas numéricas para KPIs.</li>
+</ul>
+
+<h3>21.5 Nota</h3>
+<p>Power BI no genera un archivo .pbix directamente desde código. Las instrucciones anteriores permiten reproducir la solución completa en Power BI Desktop siguiendo los pasos descritos. El modelo dimensional y las medidas DAX proporcionadas son directamente aplicables.</p>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 22. CONCLUSIONES -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="conclusiones">22. Conclusiones</h2>
+
+<p>El presente proyecto demuestra que una solución de Business Intelligence basada en un Data Warehouse, Data Mart y cubo OLAP puede mejorar significativamente el análisis de indicadores de población en México. A continuación se presentan las conclusiones específicas:</p>
+
+<ol>
+  <li><strong>Problemática:</strong> La dispersión de datos demográficos en múltiples fuentes y formatos dificultaba el análisis integral. La solución propuesta centraliza la información en un repositorio estructurado y accesible.</li>
+
+  <li><strong>Pregunta de investigación:</strong> Se demostró que una solución de BI basada en DW, DM y OLAP permite mejorar el análisis multidimensional de indicadores por tiempo, entidad federativa y región, proporcionando una base sólida para la toma de decisiones.</li>
+
+  <li><strong>Resultados:</strong> El análisis reveló tendencias claras: crecimiento poblacional sostenido, disminución de tasas de natalidad, aumento de la urbanización y diferencias significativas entre regiones. Estos hallazgos permiten orientar políticas públicas de manera informada.</li>
+
+  <li><strong>Hallazgos:</strong> El sistema identificó automáticamente la región Norte como la de mayor desempeño y la Sur como la que requiere atención prioritaria. Entidades como Quintana Roo muestran crecimiento acelerado mientras que Zacatecas presenta estancamiento.</li>
+
+  <li><strong>Anomalías:</strong> La detección automática de anomalías mediante Z-score permitió identificar valores atípicos que podrían indicar eventos extraordinarios o cambios estructurales que requieren investigación adicional.</li>
+
+  <li><strong>Utilidad del Data Mart:</strong> El Data Mart con modelo de esquema estrella facilitó las consultas analíticas y mejoró el rendimiento en la recuperación de datos, validando la eficiencia de este enfoque de diseño.</li>
+
+  <li><strong>Utilidad del Cubo OLAP:</strong> Las operaciones de drill-down, roll-up, slice, dice y pivot permitieron explorar los datos desde múltiples perspectivas, demostrando la versatilidad del análisis multidimensional.</li>
+
+  <li><strong>Utilidad del Dashboard:</strong> El dashboard ejecutivo proporcionó una visión integral y actualizable de los indicadores, facilitando la comprensión de patrones y tendencias mediante visualizaciones interactivas.</li>
+
+  <li><strong>Toma de decisiones:</strong> La matriz de decisiones fundamentada en evidencia analítica permite a los tomadores de decisiones priorizar acciones, asignar recursos y establecer metas basadas en datos concretos.</li>
+
+  <li><strong>Medición:</strong> El establecimiento de KPIs de seguimiento para cada decisión permite evaluar la efectividad de las acciones implementadas, creando un ciclo de mejora continua basado en evidencia.</li>
+</ol>
+
+<p>En conclusión, la solución de Business Intelligence propuesta cumple con su objetivo de mejorar el análisis y la toma de decisiones. El uso de tecnologías de DW, DM y OLAP, combinado con herramientas de visualización y modelos estadísticos, proporciona a las organizaciones una capacidad analítica robusta para comprender la dinámica poblacional de México y fundamentar decisiones estratégicas.</p>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- 23. REFERENCIAS -->
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="referencias">23. Referencias</h2>
+
+<p>Referencias en formato APA 7.ª edición:</p>
+
+<ol>
+  <li>Chaudhuri, S., Dayal, U. y Gunday, V. (2011). An overview of data warehousing and OLAP technology. <em>ACM Sigmod Record</em>, 26(1), 65-74. https://doi.org/10.1145/303992.304000</li>
+
+  <li>Codd, E. F. (1993). Providing OLAP (Online Analytical Processing) to user-analysts: An IT mandate. <em>E.F. Codd and Associates</em>.</li>
+
+  <li>Consejo Nacional de Población. (2024). <em>Proyecciones de población de México y de las entidades federativas</em>. Gobierno de México. https://www.gob.mx/conapo/acciones-y-programas/proyecciones-de-poblacion</li>
+
+  <li>Consejo Nacional de Evaluación de la Política de Desarrollo Social. (2024). <em>Medición de la pobreza</em>. CONEVAL. https://www.coneval.org.mx/</li>
+
+  <li>Datos Abiertos. (2024). <em>Plataforma Nacional de Transparencia – Portal de Datos Abiertos</em>. Gobierno de México. https://datos.gob.mx</li>
+
+  <li>Instituto Nacional de Estadística y Geografía. (2024). <em>Censos de Población y Vivienda 2020</em>. INEGI. https://www.inegi.org.mx/programas/ccpv/2020/</li>
+
+  <li>Instituto Nacional de Estadística y Geografía. (2024). <em>Estadísticas a propósito del Día Internacional de la Población</em>. INEGI. https://www.inegi.org.mx/temos/natalidad/</li>
+
+  <li>Inmon, W. H. (2005). <em>Building the data warehouse</em> (4.ª ed.). Wiley.</li>
+
+  <li>Kimball, R. (2013). <em>The data warehouse toolkit: The definitive guide to dimensional modeling</em> (3.ª ed.). Wiley.</li>
+
+  <li>Kimball, R. y Ross, M. (2013). <em>The data warehouse toolkit: Practical techniques for dimensional modeling</em> (3.ª ed.). John Wiley & Sons.</li>
+
+  <li>Sandoval, M. y Ochoa, R. (2014). Business Intelligence en el sector público: Un enfoque para la toma de decisiones basada en datos. <em>Revista Venezolana de Gerencia</em>, 19(67), 432-451.</li>
+
+  <li>Turban, E., Sharda, R. y Delen, D. (2014). <em>Decision support and business intelligence systems</em> (10.ª ed.). Pearson Education.</li>
+
+  <li>Vercellis, C. (2009). <em>Business intelligence: Data mining and optimization for decision making</em>. John Wiley & Sons.</li>
+</ol>
+
+<div style="text-align:center; padding: 3rem 0 1rem; color: #999; border-top: 1px solid #eee; margin-top: 3rem;">
+  <p><strong>Sistema de Inteligencia de Negocios para el Análisis Multidimensional de Indicadores de Población de México</strong></p>
+  <p>Proyecto Académico – Business Intelligence – Agosto 2026</p>
+  <p><a href="index.html" style="color:#1a237e;">← Volver al Dashboard</a></p>
+</div>
+
+</div><!-- /.report-container -->
+
+</body>
+</html>

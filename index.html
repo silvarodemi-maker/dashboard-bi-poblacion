@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Inteligencia de Negocios - Análisis Poblacional de México</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar__brand">
+      <div class="sidebar__brand-icon">BI</div>
+      <div>
+        <span class="sidebar__brand-text">BI Dashboard</span>
+        <span class="sidebar__brand-sub">Población México</span>
+      </div>
+    </div>
+    <div class="sidebar__nav">
+      <div class="sidebar__section-title">Módulos</div>
+      <a href="#" class="sidebar__link active" data-tab="dashboard">
+        <span class="sidebar__link-icon">📊</span>
+        <span class="sidebar__link-text">Dashboard Ejecutivo</span>
+      </a>
+      <a href="#" class="sidebar__link" data-tab="olap">
+        <span class="sidebar__link-icon">🗃️</span>
+        <span class="sidebar__link-text">Cubo OLAP</span>
+      </a>
+      <a href="#" class="sidebar__link" data-tab="anomalias">
+        <span class="sidebar__link-icon">⚠️</span>
+        <span class="sidebar__link-text">Anomalías</span>
+        <span class="sidebar__link-badge" id="anomalias-count">0</span>
+      </a>
+      <a href="#" class="sidebar__link" data-tab="report">
+        <span class="sidebar__link-icon">📄</span>
+        <span class="sidebar__link-text">Informe / Reporte</span>
+      </a>
+    </div>
+    <div class="sidebar__footer">
+      Sistema BI v1.0 &copy; 2024
+    </div>
+  </nav>
+
+  <!-- MAIN WRAPPER -->
+  <div class="main-wrapper">
+
+    <!-- HEADER BAR -->
+    <header class="header-bar">
+      <div>
+        <div class="header-bar__title">
+          <span class="icon">📈</span>
+          Sistema de Inteligencia de Negocios
+        </div>
+        <div class="header-bar__subtitle">Análisis Poblacional de México</div>
+      </div>
+      <div class="header-bar__actions">
+        <span class="header-bar__badge">INEGI 2018–2023</span>
+        <span class="header-bar__badge header-bar__badge--accent">Datos Simulados</span>
+      </div>
+    </header>
+
+    <!-- TAB NAVIGATION -->
+    <nav class="tab-nav">
+      <a href="#" class="tab-nav__item active" data-tab="dashboard">
+        <span class="tab-nav__item-icon">📊</span>
+        Dashboard Ejecutivo
+      </a>
+      <a href="#" class="tab-nav__item" data-tab="olap">
+        <span class="tab-nav__item-icon">🗃️</span>
+        Cubo OLAP
+      </a>
+      <a href="#" class="tab-nav__item" data-tab="anomalias">
+        <span class="tab-nav__item-icon">⚠️</span>
+        Anomalías
+      </a>
+      <a href="#" class="tab-nav__item" data-tab="report">
+        <span class="tab-nav__item-icon">📄</span>
+        Informe / Reporte
+      </a>
+    </nav>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <div class="filter-bar__group">
+        <label class="filter-bar__label" for="filtro-anio">Año</label>
+        <select id="filtro-anio" class="filter-bar__select">
+          <option value="">Todos los años</option>
+        </select>
+      </div>
+      <div class="filter-bar__group">
+        <label class="filter-bar__label" for="filtro-trimestre">Trimestre</label>
+        <select id="filtro-trimestre" class="filter-bar__select">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="filter-bar__group">
+        <label class="filter-bar__label" for="filtro-mes">Mes</label>
+        <select id="filtro-mes" class="filter-bar__select">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="filter-bar__group">
+        <label class="filter-bar__label" for="filtro-entidad">Entidad</label>
+        <select id="filtro-entidad" class="filter-bar__select">
+          <option value="">Todas</option>
+        </select>
+      </div>
+      <div class="filter-bar__group">
+        <label class="filter-bar__label" for="filtro-region">Región</label>
+        <select id="filtro-region" class="filter-bar__select">
+          <option value="">Todas</option>
+        </select>
+      </div>
+      <div class="filter-bar__group">
+        <label class="filter-bar__label" for="filtro-indicador">Indicador</label>
+        <select id="filtro-indicador" class="filter-bar__select">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="filter-bar__spacer"></div>
+      <button id="btn-limpiar-filtros" class="btn btn--outline btn--sm">Limpiar filtros</button>
+    </div>
+
+    <!-- CONTENT AREA -->
+    <div class="content-area">
+      <div class="page-content">
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- SECTION: DASHBOARD                         -->
+        <!-- ═══════════════════════════════════════════ -->
+        <section id="section-dashboard" class="tab-section active">
+
+          <!-- KPIs -->
+          <div class="section">
+            <h3 class="section__title"><span class="section__title-icon">📊</span> Indicadores Clave de Desempeño</h3>
+            <div class="kpi-grid">
+              <div class="kpi-card" style="--kpi-color: #1a237e; --kpi-color-end: #00897b;">
+                <div class="kpi-card__header">
+                  <span class="kpi-card__label">Total General</span>
+                  <div class="kpi-card__icon kpi-card__icon--primary">💰</div>
+                </div>
+                <div class="kpi-card__value" id="kpi-total">$0</div>
+                <div class="kpi-card__description">Suma de todos los registros</div>
+              </div>
+              <div class="kpi-card" style="--kpi-color: #00897b; --kpi-color-end: #26a69a;">
+                <div class="kpi-card__header">
+                  <span class="kpi-card__label">Promedio</span>
+                  <div class="kpi-card__icon kpi-card__icon--accent">📉</div>
+                </div>
+                <div class="kpi-card__value" id="kpi-promedio">$0</div>
+                <div class="kpi-card__description">Promedio por registro</div>
+              </div>
+              <div class="kpi-card" style="--kpi-color: #2e7d32; --kpi-color-end: #4caf50;">
+                <div class="kpi-card__header">
+                  <span class="kpi-card__label">Meta Promedio</span>
+                  <div class="kpi-card__icon kpi-card__icon--success">🎯</div>
+                </div>
+                <div class="kpi-card__value" id="kpi-meta">$0</div>
+                <div class="kpi-card__description">Meta promedio establecida</div>
+              </div>
+              <div class="kpi-card" style="--kpi-color: #f57f17; --kpi-color-end: #fbc02d;">
+                <div class="kpi-card__header">
+                  <span class="kpi-card__label">Cumplimiento Global</span>
+                  <div class="kpi-card__icon kpi-card__icon--warning">✅</div>
+                </div>
+                <div class="kpi-card__value" id="kpi-cumplimiento">0%</div>
+                <div class="kpi-card__description">Porcentaje de cumplimiento</div>
+              </div>
+              <div class="kpi-card" style="--kpi-color: #c62828; --kpi-color-end: #e53935;">
+                <div class="kpi-card__header">
+                  <span class="kpi-card__label">Variación Promedio</span>
+                  <div class="kpi-card__icon kpi-card__icon--danger">📊</div>
+                </div>
+                <div class="kpi-card__value" id="kpi-variacion">0%</div>
+                <div class="kpi-card__description">Cambio promedio interanual</div>
+              </div>
+              <div class="kpi-card" style="--kpi-color: #2e7d32; --kpi-color-end: #00695c;">
+                <div class="kpi-card__header">
+                  <span class="kpi-card__label">Mejor Región</span>
+                  <div class="kpi-card__icon kpi-card__icon--success">🏆</div>
+                </div>
+                <div class="kpi-card__value" id="kpi-mejor-region">N/A</div>
+                <div class="kpi-card__description">Mayor promedio regional</div>
+              </div>
+              <div class="kpi-card" style="--kpi-color: #c62828; --kpi-color-end: #ad1457;">
+                <div class="kpi-card__header">
+                  <span class="kpi-card__label">Peor Región</span>
+                  <div class="kpi-card__icon kpi-card__icon--danger">📉</div>
+                </div>
+                <div class="kpi-card__value" id="kpi-peor-region">N/A</div>
+                <div class="kpi-card__description">Menor promedio regional</div>
+              </div>
+              <div class="kpi-card" style="--kpi-color: #00897b; --kpi-color-end: #1a237e;">
+                <div class="kpi-card__header">
+                  <span class="kpi-card__label">Mejor Entidad</span>
+                  <div class="kpi-card__icon kpi-card__icon--accent">🥇</div>
+                </div>
+                <div class="kpi-card__value" id="kpi-mejor-entidad">N/A</div>
+                <div class="kpi-card__description">Entidad con mayor valor</div>
+              </div>
+              <div class="kpi-card" style="--kpi-color: #f57f17; --kpi-color-end: #c62828;">
+                <div class="kpi-card__header">
+                  <span class="kpi-card__label">Peor Entidad</span>
+                  <div class="kpi-card__icon kpi-card__icon--danger">⚠️</div>
+                </div>
+                <div class="kpi-card__value" id="kpi-peor-entidad">N/A</div>
+                <div class="kpi-card__description">Entidad con menor valor</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Row 1 -->
+          <div class="section">
+            <h3 class="section__title"><span class="section__title-icon">📈</span> Análisis Gráfico</h3>
+            <div class="chart-grid">
+              <div class="card card--no-hover">
+                <div class="card__header">
+                  <span class="card__title"><span class="card__title-icon">📉</span> Evolución Temporal</span>
+                </div>
+                <div class="card__body chart-container--fixed">
+                  <canvas id="chart-temporal"></canvas>
+                </div>
+              </div>
+              <div class="card card--no-hover">
+                <div class="card__header">
+                  <span class="card__title"><span class="card__title-icon">🗺️</span> Población por Región</span>
+                </div>
+                <div class="card__body chart-container--fixed">
+                  <canvas id="chart-region"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Row 2 -->
+          <div class="section">
+            <div class="chart-grid">
+              <div class="card card--no-hover">
+                <div class="card__header">
+                  <span class="card__title"><span class="card__title-icon">🏛️</span> Top 15 Entidades</span>
+                </div>
+                <div class="card__body chart-container--fixed">
+                  <canvas id="chart-entidad"></canvas>
+                </div>
+              </div>
+              <div class="card card--no-hover">
+                <div class="card__header">
+                  <span class="card__title"><span class="card__title-icon">🎯</span> Comparación de Indicadores</span>
+                </div>
+                <div class="card__body chart-container--fixed">
+                  <canvas id="chart-indicador"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Row 3 -->
+          <div class="section">
+            <div class="chart-grid">
+              <div class="card card--no-hover">
+                <div class="card__header">
+                  <span class="card__title"><span class="card__title-icon">✅</span> Distribución de Cumplimiento</span>
+                </div>
+                <div class="card__body chart-container--fixed">
+                  <canvas id="chart-cumplimiento"></canvas>
+                </div>
+              </div>
+              <div class="card card--no-hover">
+                <div class="card__header">
+                  <span class="card__title"><span class="card__title-icon">📊</span> Variación por Entidad</span>
+                </div>
+                <div class="card__body chart-container--fixed">
+                  <canvas id="chart-variacion"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- SECTION: OLAP                              -->
+        <!-- ═══════════════════════════════════════════ -->
+        <section id="section-olap" class="tab-section" style="display:none;">
+
+          <div class="section">
+            <h3 class="section__title"><span class="section__title-icon">🗃️</span> Cubo OLAP – Análisis Multidimensional</h3>
+            <p class="section__subtitle" id="olap-info">Cargando...</p>
+          </div>
+
+          <div class="section">
+            <div class="card card--no-hover">
+              <div class="card__header">
+                <span class="card__title">Configuración del Cubo</span>
+                <div class="card__actions">
+                  <button id="btn-reset-olap" class="btn btn--ghost btn--sm">Limpiar todo</button>
+                </div>
+              </div>
+              <div class="card__body">
+                <div class="flex flex--wrap flex--gap-md" style="align-items:center; margin-bottom:1rem;">
+                  <div class="flex flex--gap-sm" style="align-items:center;">
+                    <label class="filter-bar__label">Filas:</label>
+                    <select id="olap-row-axis" class="filter-bar__select" style="min-width:130px;">
+                      <option value="tiempo" selected>📅 Tiempo</option>
+                      <option value="entidad">🏛️ Entidad</option>
+                      <option value="region">🗺️ Región</option>
+                      <option value="indicador">📊 Indicador</option>
+                    </select>
+                  </div>
+                  <div class="flex flex--gap-sm" style="align-items:center;">
+                    <label class="filter-bar__label">Columnas:</label>
+                    <select id="olap-col-axis" class="filter-bar__select" style="min-width:130px;">
+                      <option value="tiempo">📅 Tiempo</option>
+                      <option value="entidad">🏛️ Entidad</option>
+                      <option value="region" selected>🗺️ Región</option>
+                      <option value="indicador">📊 Indicador</option>
+                    </select>
+                  </div>
+                  <button id="btn-pivot" class="btn btn--accent btn--sm">⇄ Pivot</button>
+                </div>
+                <div class="flex flex--wrap flex--gap-md" style="align-items:center; margin-bottom:1rem;">
+                  <div class="flex flex--gap-sm" style="align-items:center;">
+                    <label class="filter-bar__label">Temporal:</label>
+                    <button id="btn-drill-down" class="btn btn--primary btn--sm">Drill Down ↓</button>
+                    <button id="btn-roll-up" class="btn btn--primary btn--sm">Roll Up ↑</button>
+                  </div>
+                  <small class="text-muted">(Haz clic en una fila de tiempo para desagregar)</small>
+                </div>
+                <div class="flex flex--wrap flex--gap-md" style="align-items:center; margin-bottom:1rem;">
+                  <div class="flex flex--gap-sm" style="align-items:center;">
+                    <label class="filter-bar__label">Profundidad:</label>
+                    <select id="olap-page-axis" class="filter-bar__select" style="min-width:130px;">
+                      <option value="tiempo">📅 Tiempo</option>
+                      <option value="entidad">🏛️ Entidad</option>
+                      <option value="region">🗺️ Región</option>
+                      <option value="indicador" selected>📊 Indicador</option>
+                    </select>
+                    <select id="olap-page-value" class="filter-bar__select" style="min-width:150px;">
+                      <option value="">Todas</option>
+                    </select>
+                    <button id="btn-page-prev" class="btn btn--ghost btn--sm" title="Página anterior">◀</button>
+                    <button id="btn-page-next" class="btn btn--ghost btn--sm" title="Página siguiente">▶</button>
+                  </div>
+                  <small class="text-muted">Dimensión de profundidad (3ra dimensión)</small>
+                </div>
+                <div class="flex flex--wrap flex--gap-md" style="align-items:center; margin-bottom:1rem;">
+                  <div class="flex flex--gap-sm" style="align-items:center;">
+                    <label class="filter-bar__label">Slice:</label>
+                    <select id="olap-slice-field" class="filter-bar__select" style="min-width:110px;">
+                      <option value="region">Región</option>
+                      <option value="entidad">Entidad</option>
+                      <option value="indicador">Indicador</option>
+                      <option value="tiempo">Tiempo</option>
+                    </select>
+                    <select id="olap-slice-value" class="filter-bar__select" style="min-width:150px;">
+                      <option value="">Seleccionar...</option>
+                    </select>
+                    <button id="btn-slice" class="btn btn--success btn--sm">Aplicar</button>
+                  </div>
+                  <div class="divider--vertical"></div>
+                  <div class="flex flex--gap-sm" style="align-items:center;">
+                    <label class="filter-bar__label">Dice:</label>
+                    <select id="olap-dice-field" class="filter-bar__select" style="min-width:110px;">
+                      <option value="region">Región</option>
+                      <option value="entidad">Entidad</option>
+                      <option value="indicador">Indicador</option>
+                      <option value="tiempo">Tiempo</option>
+                    </select>
+                    <select id="olap-dice-value" class="filter-bar__select" style="min-width:150px;">
+                      <option value="">Seleccionar...</option>
+                    </select>
+                    <button id="btn-dice" class="btn btn--warning btn--sm">Agregar</button>
+                  </div>
+                </div>
+                <div id="olap-state-badges" class="flex flex--wrap flex--gap-sm" style="min-height:24px;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3 class="section__title"><span class="section__title-icon">🧊</span> Vista Cúbica 3D</h3>
+            <p class="section__subtitle">Representación visual del cubo OLAP con sus 4 dimensiones: filas, columnas, profundidad y color</p>
+            <div class="card card--no-hover">
+              <div class="card__body" style="padding:1rem; overflow-x:auto;">
+                <div id="olap-cube-3d" class="olap-cube-container"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="table-wrapper table-wrapper--scrollable-lg">
+              <div id="olap-table">
+                <p class="text-center text-muted" style="padding:2rem;">Cargando datos OLAP...</p>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- Drill-through Modal -->
+        <div id="olap-drill-modal" class="modal-overlay">
+          <div class="modal modal--xl">
+            <div class="modal__header">
+              <span class="modal__title">Detalle de Celda OLAP</span>
+              <button id="olap-drill-close" class="modal__close">&times;</button>
+            </div>
+            <div class="modal__body" id="olap-drill-body"></div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- SECTION: ANOMALÍAS                         -->
+        <!-- ═══════════════════════════════════════════ -->
+        <section id="section-anomalias" class="tab-section" style="display:none;">
+
+          <div class="section">
+            <h3 class="section__title"><span class="section__title-icon">⚠️</span> Detección de Anomalías Estadísticas</h3>
+            <p class="section__subtitle">Se detectan valores atípicos con Z-Score ≥ 2. Anomalías encontradas: <strong><span id="anomalias-count-detail">0</span></strong></p>
+          </div>
+
+          <div class="section">
+            <div class="table-wrapper table-wrapper--scrollable">
+              <table class="anomaly-table">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Entidad</th>
+                    <th>Región</th>
+                    <th>Indicador</th>
+                    <th>Valor</th>
+                    <th>Promedio</th>
+                    <th>Z-Score</th>
+                    <th>Tipo</th>
+                  </tr>
+                </thead>
+                <tbody id="anomalias-table">
+                  <tr><td colspan="8" class="text-center text-muted">Cargando...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- SECTION: INFORME / REPORTE                 -->
+        <!-- ═══════════════════════════════════════════ -->
+        <section id="section-report" class="tab-section" style="display:none;">
+
+          <!-- Hallazgos -->
+          <div class="section">
+            <div class="card card--no-hover">
+              <div class="card__header">
+                <span class="card__title"><span class="card__title-icon">🔍</span> Hallazgos Principales</span>
+              </div>
+              <div class="card__body" id="hallazgos-content">
+                <p class="text-muted">Cargando hallazgos...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interpretación -->
+          <div class="section">
+            <div class="card card--no-hover">
+              <div class="card__header">
+                <span class="card__title"><span class="card__title-icon">💡</span> Interpretación de Resultados</span>
+              </div>
+              <div class="card__body" id="interpretacion-content">
+                <p class="text-muted">Cargando interpretación...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Matriz de Decisiones -->
+          <div class="section">
+            <div class="card card--no-hover">
+              <div class="card__header">
+                <span class="card__title"><span class="card__title-icon">📋</span> Matriz de Decisiones</span>
+              </div>
+              <div class="card__body card__body--flush">
+                <div class="table-wrapper table-wrapper--scrollable">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Evidencia</th>
+                        <th>Hallazgo</th>
+                        <th>Riesgo / Oportunidad</th>
+                        <th>Decisión</th>
+                        <th>Responsable</th>
+                        <th>Prioridad</th>
+                      </tr>
+                    </thead>
+                    <tbody id="decisiones-table">
+                      <tr><td colspan="6" class="text-center text-muted">Cargando...</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+      </div><!-- /.page-content -->
+    </div><!-- /.content-area -->
+
+  </div><!-- /.main-wrapper -->
+
+</div><!-- /.app-layout -->
+
+<script src="data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
