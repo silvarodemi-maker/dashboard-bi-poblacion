@@ -1,5 +1,11 @@
 # Sistema de Inteligencia de Negocios para el Análisis Multidimensional de Indicadores de Población de México
 
+## 🌐 Dashboard en Línea
+**[https://silvarodemi-maker.github.io/dashboard-bi-poblacion/](https://silvarodemi-maker.github.io/dashboard-bi-poblacion/)**
+
+Escanea el código QR para acceder desde tu celular:
+![QR Code](qr-code.png)
+
 ## Descripción
 Sistema de Business Intelligence que analiza indicadores demográficos de las 32 entidades federativas de México mediante un Dashboard interactivo, Cubo OLAP simulado, detección de anomalías y modelo matemático.
 
